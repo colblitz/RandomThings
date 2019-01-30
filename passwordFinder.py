@@ -17,7 +17,6 @@ charset = string.letters + string.digits
 nextchar = {}
 for i, c in enumerate(charset[:-1]):
 	nextchar[c] = charset[i + 1]
-print nextchar
 
 # Set up other things
 logfile = open('output.log', 'a')
@@ -29,7 +28,12 @@ if os.path.isfile('passwordprogress.log'):
 count = 0
 starttime = time.time()
 filename = sys.argv[1]
-file = msoffcrypto.OfficeFile(open(filename, "rb"))
+print filename
+try:
+	file = msoffcrypto.OfficeFile(open(filename, "rb"))
+except:
+	print "bad file"
+	sys.exit(1)
 
 def incrementString(s):
 	if s == "":
@@ -73,11 +77,14 @@ def saveProgress():
 	with open('passwordprogress.log', 'w') as f:
 	    f.write(password)
 	    f.close()
-	logfile.write("[{}] Got to password {} ({} this run, {} s elapsed)\n".format(getTime(), password, count, time.time() - starttime));
+	logfile.write("[{}] Got to password {} ({} this run, {:.2f} s elapsed)\n".format(getTime(), password, count, time.time() - starttime));
 	logfile.flush()
 	os.fsync(logfile.fileno())
 
 if __name__ == "__main__":
+	logfile.write("[{}] Starting new run for file {} with password {}\n".format(getTime(), filename, password))
+	logfile.flush()
+	os.fsync(logfile.fileno())
 	while True:
 		found = tryPassword(password)
 		if found:
