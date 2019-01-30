@@ -86,10 +86,10 @@ if __name__ == "__main__":
 		else:
 			count += 1
 
-			# linode is ~4k/s, so pause every 10s, save every 5 min
-			if count % 40000 == 0:
+			# linode is ~2k/s, so pause every 10s, save every 5 min
+			if count % 20000 == 0:
 				time.sleep(0.5)
-			if count % 1200000 == 0:
+			if count % 500000 == 0:
 				saveProgress()
 			password = incrementString(password)
 	print "done"
