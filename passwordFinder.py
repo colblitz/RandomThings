@@ -13,8 +13,7 @@ except ImportError:
 	config = {}
 
 # Set up string things
-charset = string.lowercase
-# charset = string.letters + string.digits
+charset = string.letters + string.digits
 nextchar = {}
 for i, c in enumerate(charset[:-1]):
 	nextchar[c] = charset[i + 1]
@@ -57,20 +56,23 @@ def foundPassword():
 	logfile.flush()
 	os.fsync(logfile.fileno())
 
-	# if config.MAILGUN_URL:
-	# 	requests.post(
-	# 		config.MAILGUN_URL,
-	# 		auth=("api", config.MAILGUN_KEY),
-	# 		data={
-	# 			"from": config.MAILGUN_EMAIL,
-	# 			"to": "Joseph Lee <z.joseph.lee.z@gmail.com>",
-	# 			"subject": "Found password for file {}".format(filename),
-	# 			"html": "<html><pre><code>" + password + "</code></pre></html>"})
+	if config.MAILGUN_URL:
+		requests.post(
+			config.MAILGUN_URL,
+			auth=("api", config.MAILGUN_KEY),
+			data={
+				"from": config.MAILGUN_EMAIL,
+				"to": "Joseph Lee <z.joseph.lee.z@gmail.com>",
+				"subject": "Found password for file {}".format(filename),
+				"html": "<html><pre><code>" + password + "</code></pre></html>"})
 
 def saveProgress():
 	with open('passwordprogress.log', 'w') as f:
 	    f.write(password)
 	    f.close()
+	logfile.write("Got to password {} ({} this run, {} s elapsed)".format(password, count, time.time() - starttime));
+	logfile.flush()
+	os.fsync(logfile.fileno())
 
 if __name__ == "__main__":
 	while True:
@@ -80,10 +82,11 @@ if __name__ == "__main__":
 			break
 		else:
 			count += 1
-			if (count % 100) == 0:
-				print "got to password: " + password
+
+			# linode is ~4k/s, so pause every 10s, save every 5 min
+			if count % 40000 == 0:
+				time.sleep(0.5)
+			if count % 1200000 == 0:
 				saveProgress()
-			if (count % 1000) == 0:
-				print "passwords / s: " + str((count / (time.time() - starttime)))
 			password = incrementString(password)
 	print "done"
