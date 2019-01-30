@@ -38,6 +38,9 @@ def incrementString(s):
 		return incrementString(s[:-1]) + charset[0]
 	return s[:-1] + nextchar[s[-1]]
 
+def getTime():
+	return time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
+
 def tryPassword(p):
 	try:
 		file.load_key(password=p)
@@ -45,14 +48,14 @@ def tryPassword(p):
 	except AssertionError:
 		return False
 	except Exception as e:
-		logfile.write("Error trying password {}: {}\n".format(p, str(e)))
+		logfile.write("[{}] Error trying password {}: {}\n".format(getTime(), p, str(e)))
 		logfile.flush()
 		os.fsync(logfile.fileno())
 		return False
 
 def foundPassword():
 	print "Password is " + password
-	logfile.write("Password is " + password);
+	logfile.write("[{}] Password is {}\n".format(getTime(), password));
 	logfile.flush()
 	os.fsync(logfile.fileno())
 
@@ -70,7 +73,7 @@ def saveProgress():
 	with open('passwordprogress.log', 'w') as f:
 	    f.write(password)
 	    f.close()
-	logfile.write("Got to password {} ({} this run, {} s elapsed)".format(password, count, time.time() - starttime));
+	logfile.write("[{}] Got to password {} ({} this run, {} s elapsed)\n".format(getTime(), password, count, time.time() - starttime));
 	logfile.flush()
 	os.fsync(logfile.fileno())
 
