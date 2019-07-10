@@ -12,6 +12,243 @@ b = "0eNqdnOtu4joURt8lv8kovgOvcjQ6CuAykUKSk4TOVBXvfsyt7RQTvJA6GrV8/ezYKzuO93bfs1
 
 # print b[1:].decode("base64").decode("zlib")
 
+test = "0eNqdmP1q4zAQxF+l6G8b9G3Hr1LK4bS6qyBRjK2UhpB3Pyc52lyrtjOGQLCT/VnanZG0Por1Zh+GMaYsuqOIj7s0ie7+KKb4J/Wb8718GILoRMxhKyqR+u35Ko99mobdmOt12GRxqkRMT+FVdOpUFYJf4pj38523+Os/ankTqanI9ibSUJHuJtKeHioRUo45huu8LxeHX2m/XYdxns5XM67EsJvmsF06P3JG1a4Sh/nLz/SnOIbH62+XWX2AahrqTgWMwTEGHpvFoRaGOhyqYKjHoRqGNjAUH2gLMyXMXMFMvPRKwlA8oQp30JvW/4PaElSzUA9AcT/hyleW9roteV05mmOKHE/72wCpe7fN737KNWpIBN1yaImTV6yIAKiWLNQCUH4X0qXia37jUUWOoUWkgFnyW48GqG6ZNJEBexKt8FE3i1SPDLplBYpAaSsBOTCSVassnpJo8xQ1bzSrTiBvhjaSBKDvPgqvwximqca28w8D9iW2IwuNJMGTTCQHDVv04oJpWhZT3HTNiq6I+kf7+bwuF7KLE7aKpplvaHohzfysRGsWqhzYxK0lFYkwWecAK6T1rDyLZ0tLm6XYjtqWXcwcUOYV2+QCUCfZ1hGBKrbJRaCa7B0RpiF7XIRpydYRYTqyx0WYnuzxEGZDOhthsqe0T13EQ3V9Y9fdvOCrxKafIWfoc5zu5k9/d3lKJV7COF0iGyNV47TVel4r/gK447WR"
+
+def blueprintStringToJsonString(s):
+	return s[1:].decode("base64").decode("zlib")
+
+def jsonStringToBlueprintString(js):
+	return "0" + js.encode("zlib").encode("base64").replace("\n","")
+
+def jsonStringToJson(js):
+	return json.loads(js)
+
+def jsonToJsonString(j):
+	return json.dumps(j, separators=(',',':'))
+
+def bpsTojs(s):
+	return blueprintStringToJsonString(s)
+
+def jsTobps(js):
+	return jsonStringToBlueprintString(js)
+
+def jsToj(js):
+	return jsonStringToJson(js)
+
+def jTojs(j):
+	return jsonToJsonString(j)
+
+class Icon:
+	def __init__(self, types, name):
+		self.types = types
+		self.name = name
+
+	def toJs(self, index):
+		j = {}
+		j["index"] = index + 1
+		j["signal"] = {}
+		j["signal"]["type"] = self.types
+		j["signal"]["name"] = self.name
+		return j
+
+class Entity:
+	def __init__(self, name, x, y, direction):
+		self.name = name
+		self.x = x
+		self.y = y
+		self.direction = direction
+
+	def toJs(self, index):
+		j = {}
+		j["entity_number"] = index + 1
+		j["name"] = self.name
+		j["position"] = {}
+		j["position"]["x"] = self.x
+		j["position"]["y"] = self.y
+		if self.direction:
+			j["direction"] = self.direction
+		return j
+
+# class Blueprint:
+# 	def __init__(self):
+
+
+print "---------------------------------------------------"
+
+import math
+
+def getCircleWithRadius(r):
+	def circle(x, y):
+		return x*x + y*y - r*r
+	def distance(x, y):
+		return abs(math.sqrt(x*x + y*y) - r)
+
+	x = 0
+	y = 0
+	points = set()
+
+	found = False
+	d = abs(circle(x, y))
+	while not found:
+		x += 1
+		newd = abs(circle(x, y))
+		if newd < d:
+			d = newd
+		else:
+			found = True
+			x -= 1
+
+	def getOptions(x, y):
+		return [(x + 1, y), (x, y + 1), (x - 1, y), (x, y - 1)]
+
+	directions = {}
+	points.add((x, y))
+
+	last = (x, y)
+	cx = x
+	cy = y
+	while True:
+		options = getOptions(cx, cy)
+		if last in options: options.remove(last)
+		closest = min(options, key=lambda x: distance(*x))
+		# print closest
+		direction = "d"
+		if closest[0] > cx:
+			direction = "r"
+		elif closest[0] == cx and closest[1] < cy:
+			direction = "u"
+		elif closest[0] < cx:
+			direction = "l"
+
+		directions[(cx, cy)] = direction
+
+		if closest in points:
+			break
+		points.add(closest)
+		last = (cx, cy)
+		cx, cy = closest
+
+	a = [[" " for x in xrange(r*2+1)] for y in xrange(r*2+1)]
+	newpoints = set()
+	for p in points:
+		a[p[1] + r][p[0] + r] = directions[p]
+
+	for x in a:
+		print " ".join(x)
+
+	return points, directions
+
+directionMap = {
+	"u": 0,
+	"r": 2,
+	"d": 4,
+	"l": 6
+}
+
+points, directions = getCircleWithRadius(25)
+
+bp = {}
+bp["blueprint"] = {}
+bp["blueprint"]["item"] = "blueprint"
+bp["blueprint"]["label"] = "test"
+# bp["blueprint"]["version"] = "blueprint"
+icons = []
+icons.append(Icon("item", "transport-belt"))
+for i in xrange(len(icons)):
+	icons[i] = icons[i].toJs(i)
+entities = []
+
+n = "transport-belt"
+
+for p in points:
+	entities.append(Entity(n, p[0], p[1], directionMap[directions[p]]))
+
+for i in xrange(len(entities)):
+	entities[i] = entities[i].toJs(i)
+bp["blueprint"]["icons"] = icons
+bp["blueprint"]["entities"] = entities
+
+print jTojs(bp)
+bps = jsTobps(jTojs(bp))
+print "********************************************************************"
+print bps
+print "********************************************************************"
+
+# r = 25
+# def circle(x, y):
+# 	return x*x + y*y - r*r
+# def distance(x, y):
+# 	return abs(math.sqrt(x*x + y*y) - r)
+
+
+# x = 0
+# y = 0
+# points = set()
+
+# def getStartingPoint():
+# 	x = 0
+# 	y = 0
+# 	found = False
+# 	distance = abs(circle(x, y))
+# 	while not found:
+# 		x += 1
+# 		newd = abs(circle(x, y))
+# 		if newd < distance:
+# 			distance = newd
+# 		else:
+# 			found = True
+# 			x -= 1
+# 	return x, y
+
+# x, y = getStartingPoint()
+
+# print x, y
+
+# def getOptions(x, y):
+# 	return [(x + 1, y), (x, y + 1), (x - 1, y), (x, y - 1)]
+
+# directions = {}
+# points.add((x, y))
+
+# last = (x, y)
+# cx = x
+# cy = y
+# while True:
+# 	options = getOptions(cx, cy)
+# 	if last in options: options.remove(last)
+# 	closest = min(options, key=lambda x: distance(*x))
+# 	# print closest
+# 	direction = "d"
+# 	if closest[0] > cx:
+# 		direction = "r"
+# 	elif closest[0] == cx and closest[1] < cy:
+# 		direction = "u"
+# 	elif closest[0] < cx:
+# 		direction = "l"
+
+# 	directions[(cx, cy)] = direction
+
+# 	if closest in points:
+# 		break
+# 	points.add(closest)
+# 	last = (cx, cy)
+# 	cx, cy = closest
+
+
+# a = [[" " for x in xrange(r*2+1)] for y in xrange(r*2+1)]
+# newpoints = set()
+# for p in points:
+# 	a[p[1] + r][p[0] + r] = directions[p]
+
+# for x in a:
+# 	print " ".join(x)
+
+
+
+
+print "---------------------------------------------------"
+
+
 
 
 def decodeFromBlueprintString(s):
@@ -22,7 +259,6 @@ def encodeToBlueprintString(js):
 
 # def cycle(s):
 # 	return encodeToBlueprintString(decodeFromBlueprintString(s))
-
 
 def toGrid(js):
 	j = json.loads(js)
@@ -72,6 +308,19 @@ def toGrid(js):
 	for r in a:
 		print r
 
+testjs = json.loads(decodeFromBlueprintString(test))
+for e in testjs["blueprint"]["entities"]:
+	# print e["position"]
+	e["position"]["y"] += 5
+	e["position"]["x"] += 5
+
+newbp = encodeToBlueprintString(json.dumps(testjs, separators=(',',':')))
+print newbp
+
+
+
+
+
 import numpy as np
 
 
@@ -108,7 +357,7 @@ print blah2.shape
 blah2 = blah2.reshape(blah.shape)
 print blah2.shape
 
-print blah2[100:200,0:100].tolist()
+# print blah2[100:200,0:100].tolist()
 
 # print blah[100:200,0:100].tolist()
 # np.apply_over_axes(np.sum, a, [0,2])
