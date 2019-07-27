@@ -77,6 +77,113 @@ print "---------------------------------------------------"
 
 import math
 
+
+# e = math.sqrt(1 - minor^2 / major^2)
+# e^2 = 1 - minor^2/major^2
+
+# 1 - e^2 = minor^2 / major^2
+# (1 - e^2) * major^2 = minor^2
+# minor = math.sqrt( (1-e^2) * major^2)
+
+def getSemiMinor(semiMajor, eccentricity):
+	return int(math.sqrt( (1 - eccentricity**2) * semiMajor**2 ))
+
+print "_---------------------------------"
+print getSemiMinor(1170, 0.206)
+print getSemiMinor(1170, 0.001)
+print getSemiMinor(1170, 0.999)
+
+
+def outside(x, y, a, b):
+	# checking the equation of
+	# ellipse with the given point
+	p = ((math.pow(x, 2) // math.pow(a, 2)) +
+		 (math.pow(y, 2) // math.pow(b, 2)))
+	return p > 1
+
+def solve(semi_major, semi_minor, p):
+	px = abs(p[0])
+	py = abs(p[1])
+
+	t = math.pi / 4 if outside(px, py, semi_major, semi_minor) else math.atan2(px, py)
+
+	a = semi_major
+	b = semi_minor
+
+	for x in range(0, 3):
+		x = a * math.cos(t)
+		y = b * math.sin(t)
+
+		ex = (a*a - b*b) * math.cos(t)**3 / a
+		ey = (b*b - a*a) * math.sin(t)**3 / b
+
+		rx = x - ex
+		ry = y - ey
+
+		qx = px - ex
+		qy = py - ey
+
+		r = math.hypot(ry, rx)
+		q = math.hypot(qy, qx)
+
+		delta_c = r * math.asin((rx*qy - ry*qx)/(r*q))
+		delta_t = delta_c / math.sqrt(a*a + b*b - x*x - y*y)
+
+		t += delta_t
+		t = min(math.pi/2, max(0, t))
+
+	return (math.copysign(x, p[0]), math.copysign(y, p[1]))
+
+def getDistance(semiMajor, semiMinor, point):
+	closest = solve(semiMajor, semiMinor, point)
+	return math.hypot(point[0] - closest[0], point[1] - closest[1])
+
+def getEllipse(semiMajor, eccentricity):
+	semiMinor = getSemiMinor(semiMajor, eccentricity)
+
+	x = semiMajor
+	y = 0
+	points = set()
+
+	def getOptions(x, y):
+		return [(x + 1, y), (x, y + 1), (x - 1, y), (x, y - 1)]
+
+	points.add((x, y))
+	last = (x, y)
+	cx = x
+	cy = y
+	while True:
+		options = getOptions(cx, cy)
+		if last in options: options.remove(last)
+		closest = min(options, key=lambda x: getDistance(semiMajor, semiMinor, x))
+
+		direction = "d"
+		if closest[0] > cx:
+			direction = "r"
+		elif closest[0] == cx and closest[1] < cy:
+			direction = "u"
+		elif closest[0] < cx:
+			direction = "l"
+
+		directions[(cx, cy)] = direction
+
+		if closest in points:
+			break
+		points.add(closest)
+		last = (cx, cy)
+		cx, cy = closest
+
+	a = [[" " for x in xrange(semiMajor*2+1)] for y in xrange(semiMajor*2+1)]
+	newpoints = set()
+	for p in points:
+		a[p[1] + semiMajor][p[0] + semiMajor] = directions[p]
+
+	for x in a:
+		print " ".join(x)
+
+	return points, directions
+
+
 def getCircleWithRadius(r):
 	def circle(x, y):
 		return x*x + y*y - r*r
@@ -146,6 +253,8 @@ directionMap = {
 }
 
 points, directions = getCircleWithRadius(25)
+
+points, directions = getEllipse(25, 0.5)
 
 bp = {}
 bp["blueprint"] = {}
