@@ -93,6 +93,8 @@ print getSemiMinor(1170, 0.206)
 print getSemiMinor(1170, 0.001)
 print getSemiMinor(1170, 0.999)
 
+def getOptions(x, y):
+	return [(x + 1, y), (x, y + 1), (x - 1, y), (x, y - 1)]
 
 def outside(x, y, a, b):
 	# checking the equation of
@@ -134,26 +136,28 @@ def solve(semi_major, semi_minor, p):
 
 	return (math.copysign(x, p[0]), math.copysign(y, p[1]))
 
+memoizedDistances = {}
+hits = 0
+
 def getDistance(semiMajor, semiMinor, point):
+	global hits
+	k = (semiMajor, semiMinor, point)
+	if k in memoizedDistances:
+		hits += 1
+		return memoizedDistances[k]
 	closest = solve(semiMajor, semiMinor, point)
-	return math.hypot(point[0] - closest[0], point[1] - closest[1])
+	d = math.hypot(point[0] - closest[0], point[1] - closest[1])
+	memoizedDistances[k] = d
+	return d
 
-def getEllipse(semiMajor, eccentricity):
-	semiMinor = getSemiMinor(semiMajor, eccentricity)
-
-	x = semiMajor
-	y = 0
-	points = set()
-
-	def getOptions(x, y):
-		return [(x + 1, y), (x, y + 1), (x - 1, y), (x, y - 1)]
-
-	points.add((x, y))
+def addLayer(semiMajor, semiMinor, x, y, points, directions):
+	newpoints = set()
+	newpoints.add((x, y))
 	last = (x, y)
 	cx = x
 	cy = y
 	while True:
-		options = getOptions(cx, cy)
+		options = [p for p in getOptions(cx, cy) if p != last and p not in points]
 		if last in options: options.remove(last)
 		closest = min(options, key=lambda x: getDistance(semiMajor, semiMinor, x))
 
@@ -167,83 +171,135 @@ def getEllipse(semiMajor, eccentricity):
 
 		directions[(cx, cy)] = direction
 
-		if closest in points:
+		if closest in newpoints:
 			break
-		points.add(closest)
+		newpoints.add(closest)
 		last = (cx, cy)
 		cx, cy = closest
+	return newpoints
 
+def getEllipse(semiMajor, eccentricity, inner = 0, outer = 0):
+	semiMinor = getSemiMinor(semiMajor, eccentricity)
+
+	directions = {}
+	points = set()
+
+	x = semiMajor
+	y = 0
+	newpoints = addLayer(semiMajor, semiMinor, x, y, set(), directions)
+	points.update(newpoints)
+
+	# points = set()
+
+	# points.add((x, y))
+	# last = (x, y)
+	# cx = x
+	# cy = y
+	# while True:
+	# 	options = getOptions(cx, cy)
+	# 	if last in options: options.remove(last)
+	# 	closest = min(options, key=lambda x: getDistance(semiMajor, semiMinor, x))
+
+	# 	direction = "d"
+	# 	if closest[0] > cx:
+	# 		direction = "r"
+	# 	elif closest[0] == cx and closest[1] < cy:
+	# 		direction = "u"
+	# 	elif closest[0] < cx:
+	# 		direction = "l"
+
+	# 	directions[(cx, cy)] = direction
+
+	# 	if closest in points:
+	# 		break
+	# 	points.add(closest)
+	# 	last = (cx, cy)
+	# 	cx, cy = closest
+
+	# TODO: Too many layers create pinches that become deadends
+	for i in xrange(1, inner+1):
+		x = semiMajor - i
+		y = 0
+		newpoints = addLayer(semiMajor, semiMinor, x, y, points, directions)
+		# newpoints = set()
+
+		# newpoints.add((x, y))
+		# last = (x, y)
+		# cx = x
+		# cy = y
+		# while True:
+		# 	options = [p for p in getOptions(cx, cy) if p != last and p not in points]
+		# 	if last in options: options.remove(last)
+		# 	closest = min(options, key=lambda x: getDistance(semiMajor, semiMinor, x))
+
+		# 	direction = "d"
+		# 	if closest[0] > cx:
+		# 		direction = "r"
+		# 	elif closest[0] == cx and closest[1] < cy:
+		# 		direction = "u"
+		# 	elif closest[0] < cx:
+		# 		direction = "l"
+
+		# 	directions[(cx, cy)] = direction
+
+		# 	if closest in newpoints:
+		# 		break
+		# 	newpoints.add(closest)
+		# 	last = (cx, cy)
+		# 	cx, cy = closest
+
+		points.update(newpoints)
+
+	for i in xrange(1, outer+1):
+		x = semiMajor + i
+		y = 0
+		newpoints = addLayer(semiMajor, semiMinor, x, y, points, directions)
+		points.update(newpoints)
+
+	# 	x = semiMajor + i
+	# 	y = 0
+	# 	newpoints = set()
+
+	# 	newpoints.add((x, y))
+	# 	last = (x, y)
+	# 	cx = x
+	# 	cy = y
+	# 	while True:
+	# 		options = [p for p in getOptions(cx, cy) if p != last and p not in points]
+	# 		if last in options: options.remove(last)
+	# 		closest = min(options, key=lambda x: getDistance(semiMajor, semiMinor, x))
+
+	# 		direction = "d"
+	# 		if closest[0] > cx:
+	# 			direction = "r"
+	# 		elif closest[0] == cx and closest[1] < cy:
+	# 			direction = "u"
+	# 		elif closest[0] < cx:
+	# 			direction = "l"
+
+	# 		directions[(cx, cy)] = direction
+
+	# 		if closest in newpoints:
+	# 			break
+	# 		newpoints.add(closest)
+	# 		last = (cx, cy)
+	# 		cx, cy = closest
+
+	# 	points.update(newpoints)
+
+
+	return points, directions
+
+def printPoints(semiMajor, points, directions):
 	a = [[" " for x in xrange(semiMajor*2+1)] for y in xrange(semiMajor*2+1)]
-	newpoints = set()
 	for p in points:
 		a[p[1] + semiMajor][p[0] + semiMajor] = directions[p]
 
 	for x in a:
 		print " ".join(x)
 
-	return points, directions
-
-
 def getCircleWithRadius(r):
-	def circle(x, y):
-		return x*x + y*y - r*r
-	def distance(x, y):
-		return abs(math.sqrt(x*x + y*y) - r)
-
-	x = 0
-	y = 0
-	points = set()
-
-	found = False
-	d = abs(circle(x, y))
-	while not found:
-		x += 1
-		newd = abs(circle(x, y))
-		if newd < d:
-			d = newd
-		else:
-			found = True
-			x -= 1
-
-	def getOptions(x, y):
-		return [(x + 1, y), (x, y + 1), (x - 1, y), (x, y - 1)]
-
-	directions = {}
-	points.add((x, y))
-
-	last = (x, y)
-	cx = x
-	cy = y
-	while True:
-		options = getOptions(cx, cy)
-		if last in options: options.remove(last)
-		closest = min(options, key=lambda x: distance(*x))
-		# print closest
-		direction = "d"
-		if closest[0] > cx:
-			direction = "r"
-		elif closest[0] == cx and closest[1] < cy:
-			direction = "u"
-		elif closest[0] < cx:
-			direction = "l"
-
-		directions[(cx, cy)] = direction
-
-		if closest in points:
-			break
-		points.add(closest)
-		last = (cx, cy)
-		cx, cy = closest
-
-	a = [[" " for x in xrange(r*2+1)] for y in xrange(r*2+1)]
-	newpoints = set()
-	for p in points:
-		a[p[1] + r][p[0] + r] = directions[p]
-
-	for x in a:
-		print " ".join(x)
-
-	return points, directions
+	return getEllipse(r, 0)
 
 directionMap = {
 	"u": 0,
@@ -252,9 +308,20 @@ directionMap = {
 	"l": 6
 }
 
-points, directions = getCircleWithRadius(25)
+# points, directions = getCircleWithRadius(25)
+# printPoints(25, points, directions)
 
-points, directions = getEllipse(25, 0.5)
+# points, directions = getEllipse(25, 0.5)
+# printPoints(25, points, directions)
+
+# points, directions = getEllipse(35, 0.5, 3)
+# printPoints(35, points, directions)
+
+points, directions = getEllipse(20, 0.7, 1, 1)
+printPoints(24, points, directions)
+
+# points, directions = getEllipse(38, 0.5, 0, 0)
+# printPoints(40, points, directions)
 
 bp = {}
 bp["blueprint"] = {}
@@ -277,12 +344,15 @@ for i in xrange(len(entities)):
 bp["blueprint"]["icons"] = icons
 bp["blueprint"]["entities"] = entities
 
-print jTojs(bp)
+# print jTojs(bp)
 bps = jsTobps(jTojs(bp))
 print "********************************************************************"
 print bps
 print "********************************************************************"
-
+print "hits: "
+print hits
+print len(memoizedDistances)
+print "********************************************************************"
 # r = 25
 # def circle(x, y):
 # 	return x*x + y*y - r*r
