@@ -14,6 +14,8 @@ b = "0eNqdnOtu4joURt8lv8kovgOvcjQ6CuAykUKSk4TOVBXvfsyt7RQTvJA6GrV8/ezYKzuO93bfs1
 
 test = "0eNqdmP1q4zAQxF+l6G8b9G3Hr1LK4bS6qyBRjK2UhpB3Pyc52lyrtjOGQLCT/VnanZG0Por1Zh+GMaYsuqOIj7s0ie7+KKb4J/Wb8718GILoRMxhKyqR+u35Ko99mobdmOt12GRxqkRMT+FVdOpUFYJf4pj38523+Os/ankTqanI9ibSUJHuJtKeHioRUo45huu8LxeHX2m/XYdxns5XM67EsJvmsF06P3JG1a4Sh/nLz/SnOIbH62+XWX2AahrqTgWMwTEGHpvFoRaGOhyqYKjHoRqGNjAUH2gLMyXMXMFMvPRKwlA8oQp30JvW/4PaElSzUA9AcT/hyleW9roteV05mmOKHE/72wCpe7fN737KNWpIBN1yaImTV6yIAKiWLNQCUH4X0qXia37jUUWOoUWkgFnyW48GqG6ZNJEBexKt8FE3i1SPDLplBYpAaSsBOTCSVassnpJo8xQ1bzSrTiBvhjaSBKDvPgqvwximqca28w8D9iW2IwuNJMGTTCQHDVv04oJpWhZT3HTNiq6I+kf7+bwuF7KLE7aKpplvaHohzfysRGsWqhzYxK0lFYkwWecAK6T1rDyLZ0tLm6XYjtqWXcwcUOYV2+QCUCfZ1hGBKrbJRaCa7B0RpiF7XIRpydYRYTqyx0WYnuzxEGZDOhthsqe0T13EQ3V9Y9fdvOCrxKafIWfoc5zu5k9/d3lKJV7COF0iGyNV47TVel4r/gK447WR"
 
+testbook = "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"
+
 def blueprintStringToJsonString(s):
 	return s[1:].decode("base64").decode("zlib")
 
@@ -71,6 +73,8 @@ class Entity:
 
 # class Blueprint:
 # 	def __init__(self):
+
+# print bpsTojs(testbook)
 
 
 print "---------------------------------------------------"
@@ -189,64 +193,11 @@ def getEllipse(semiMajor, eccentricity, inner = 0, outer = 0):
 	newpoints = addLayer(semiMajor, semiMinor, x, y, set(), directions)
 	points.update(newpoints)
 
-	# points = set()
-
-	# points.add((x, y))
-	# last = (x, y)
-	# cx = x
-	# cy = y
-	# while True:
-	# 	options = getOptions(cx, cy)
-	# 	if last in options: options.remove(last)
-	# 	closest = min(options, key=lambda x: getDistance(semiMajor, semiMinor, x))
-
-	# 	direction = "d"
-	# 	if closest[0] > cx:
-	# 		direction = "r"
-	# 	elif closest[0] == cx and closest[1] < cy:
-	# 		direction = "u"
-	# 	elif closest[0] < cx:
-	# 		direction = "l"
-
-	# 	directions[(cx, cy)] = direction
-
-	# 	if closest in points:
-	# 		break
-	# 	points.add(closest)
-	# 	last = (cx, cy)
-	# 	cx, cy = closest
-
 	# TODO: Too many layers create pinches that become deadends
 	for i in xrange(1, inner+1):
 		x = semiMajor - i
 		y = 0
 		newpoints = addLayer(semiMajor, semiMinor, x, y, points, directions)
-		# newpoints = set()
-
-		# newpoints.add((x, y))
-		# last = (x, y)
-		# cx = x
-		# cy = y
-		# while True:
-		# 	options = [p for p in getOptions(cx, cy) if p != last and p not in points]
-		# 	if last in options: options.remove(last)
-		# 	closest = min(options, key=lambda x: getDistance(semiMajor, semiMinor, x))
-
-		# 	direction = "d"
-		# 	if closest[0] > cx:
-		# 		direction = "r"
-		# 	elif closest[0] == cx and closest[1] < cy:
-		# 		direction = "u"
-		# 	elif closest[0] < cx:
-		# 		direction = "l"
-
-		# 	directions[(cx, cy)] = direction
-
-		# 	if closest in newpoints:
-		# 		break
-		# 	newpoints.add(closest)
-		# 	last = (cx, cy)
-		# 	cx, cy = closest
 
 		points.update(newpoints)
 
@@ -255,38 +206,6 @@ def getEllipse(semiMajor, eccentricity, inner = 0, outer = 0):
 		y = 0
 		newpoints = addLayer(semiMajor, semiMinor, x, y, points, directions)
 		points.update(newpoints)
-
-	# 	x = semiMajor + i
-	# 	y = 0
-	# 	newpoints = set()
-
-	# 	newpoints.add((x, y))
-	# 	last = (x, y)
-	# 	cx = x
-	# 	cy = y
-	# 	while True:
-	# 		options = [p for p in getOptions(cx, cy) if p != last and p not in points]
-	# 		if last in options: options.remove(last)
-	# 		closest = min(options, key=lambda x: getDistance(semiMajor, semiMinor, x))
-
-	# 		direction = "d"
-	# 		if closest[0] > cx:
-	# 			direction = "r"
-	# 		elif closest[0] == cx and closest[1] < cy:
-	# 			direction = "u"
-	# 		elif closest[0] < cx:
-	# 			direction = "l"
-
-	# 		directions[(cx, cy)] = direction
-
-	# 		if closest in newpoints:
-	# 			break
-	# 		newpoints.add(closest)
-	# 		last = (cx, cy)
-	# 		cx, cy = closest
-
-	# 	points.update(newpoints)
-
 
 	return points, directions
 
@@ -317,8 +236,107 @@ directionMap = {
 # points, directions = getEllipse(35, 0.5, 3)
 # printPoints(35, points, directions)
 
+
+
+chunkSize = 32
+def getChunkedPoints(points, directions):
+	chunkedPoints = {}
+	for p in points:
+		d = directions[p]
+		x = p[0]
+		y = p[1]
+		cx = x / chunkSize
+		cy = y / chunkSize
+		ck = (cx, cy)
+
+		mx = x % chunkSize
+		my = y % chunkSize
+		if ck not in chunkedPoints:
+			chunkedPoints[ck] = []
+		chunkedPoints[ck].append((mx, my, d))
+	return chunkedPoints
+
+def createBPFromChunk(ck, chunk):
+	bp = {}
+	bp["blueprint"] = {}
+	bp["blueprint"]["item"] = "blueprint"
+	bp["blueprint"]["label"] = str(ck)
+	# bp["blueprint"]["version"] = "blueprint"
+	icons = []
+	icons.append(Icon("item", "transport-belt"))
+	for i in xrange(len(icons)):
+		icons[i] = icons[i].toJs(i)
+	entities = []
+
+	n = "transport-belt"
+
+	for p in chunk:
+		entities.append(Entity(n, p[0], p[1], directionMap[p[2]]))
+
+	for i in xrange(len(entities)):
+		entities[i] = entities[i].toJs(i)
+
+	bp["blueprint"]["icons"] = icons
+	bp["blueprint"]["entities"] = entities
+	return bp
+
+def createBlueprintBookFromChunkedPoints(chunkedPoints):
+	s = len(chunkedPoints)
+	i = 0
+	blueprints = []
+	for ck in sorted(chunkedPoints):
+		cpoints = chunkedPoints[ck]
+		# print ck
+		# print cpoints
+
+		bp = createBPFromChunk(ck, cpoints)
+		bp["index"] = i
+		i += 1
+		blueprints.append(bp)
+	bpbook = {}
+	bpbook["blueprint_book"] = {}
+	bpbook["blueprint_book"]["blueprints"] = blueprints
+	bpbook["blueprint_book"]["item"] = "blueprint-book"
+	bpbook["blueprint_book"]["label"] = "asdf"
+	bpbook["blueprint_book"]["active_index"] = 0
+	return bpbook
+
 points, directions = getEllipse(20, 0.7, 1, 1)
 printPoints(24, points, directions)
+
+cp = getChunkedPoints(points, directions)
+
+bpbook = createBlueprintBookFromChunkedPoints(cp)
+print bpbook
+bps = jsTobps(jTojs(bpbook))
+
+print "********************************************************************"
+print "********************************************************************"
+print "********************************************************************"
+print bps
+print "********************************************************************"
+print "********************************************************************"
+print "********************************************************************"
+
+
+
+# x = sorted(steps, key=lambda key: steps[key])
+# 	# print jTojs(bp)
+# 	bps = jsTobps(jTojs(bp))
+
+chunkSize = 32
+
+
+# for c in chunkedPoints:
+# 	cpoints = chunkedPoints[c]
+# 	t = [[" " for x in xrange(chunkSize)] for y in xrange(chunkSize)]
+# 	for p in cpoints:
+# 		t[p[1]][p[0]] = p[2]
+
+# 	for x in t:
+# 		print " ".join(x)
+# 	print "--------------------"
+
 
 # points, directions = getEllipse(38, 0.5, 0, 0)
 # printPoints(40, points, directions)
