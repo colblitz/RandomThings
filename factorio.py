@@ -235,7 +235,32 @@ def getChunkedPoints(points, directions):
 		if ck not in chunkedPoints:
 			chunkedPoints[ck] = []
 		chunkedPoints[ck].append((mx, my, d))
+	# {
+	# 	chunk : [(1, 2, 3), (4, 5, 6), ...],
+	# 	chunk : [(1, 2, 3), (4, 5, 6), ...],
+	# }
 	return chunkedPoints
+
+BATCH_FOR_BOOK = 20
+def partitionChunkedPoints(chunkedPoints):
+	allChunks = []
+	for c in chunkedPoints:
+		allChunks.append(c)
+	print allChunks
+	sortedChunks = sorted(allChunks, key=lambda p: math.atan2(p[1], p[0]))
+
+	# [[chunk, chunk], [chunk, chunk], ... ]
+	partitions = [sortedChunks[i:i + BATCH_FOR_BOOK] for i in xrange(0, len(sortedChunks), BATCH_FOR_BOOK)]
+
+	allps = []
+	for p in partitions:
+		# p = [chunk, chunk, ...]
+		newp = {}
+		for c in p:
+			newp[c] = chunkedPoints[c]
+		allps.append(newp)
+	# [ { chunk: [], chunk: [] }, { chunk: [], chunk: [] }, ... ]
+	return allps
 
 def createBPFromChunk(ck, chunk):
 	bp = {}
@@ -282,6 +307,8 @@ def createBlueprintBookFromChunkedPoints(chunkedPoints):
 	bpbook["blueprint_book"]["active_index"] = 0
 	return bpbook
 
+
+
 ################################################################################
 ###   Generate Solar System   ##################################################
 ################################################################################
@@ -292,9 +319,18 @@ def generateBlueprint(semiMajor, eccentricity, inner, outer):
 	t2 = datetime.datetime.now()
 	cp = getChunkedPoints(points, directions)
 	t3 = datetime.datetime.now()
-	bpbook = createBlueprintBookFromChunkedPoints(cp)
+
+	partitions = partitionChunkedPoints(cp)
+	books = []
+
+	# [ { chunk: [], chunk: [] }, { chunk: [], chunk: [] }, ... ]
+	for p in partitions:
+		bpbook = createBlueprintBookFromChunkedPoints(p)
+		bps = jsTobps(jTojs(bpbook))
+		books.append(bps)
+
 	t4 = datetime.datetime.now()
-	bps = jsTobps(jTojs(bpbook))
+	# bps = jsTobps(jTojs(bpbook))
 
 	print "Times (ms) for ellipse {}".format(semiMajor)
 	print "  - generate ellipse : {}".format((t2 - t1).microseconds / 1000)
@@ -302,7 +338,8 @@ def generateBlueprint(semiMajor, eccentricity, inner, outer):
 	print "  - generate bp book : {}".format((t4 - t3).microseconds / 1000)
 	print "  - points: {}".format(len(points))
 	print "  - chunks: {}".format(len(cp))
-	print "  - bpbook: {}".format(len(bps))
+	print "  - bpbook: {}".format(len(books))
+	print "  - bpbook: {}".format(map(len, books))
 
 	return bpbook
 
