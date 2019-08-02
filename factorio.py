@@ -267,18 +267,21 @@ def getChunkedPoints(ox, oy, points, directions):
 	# }
 	return chunkedPoints
 
-def zeroToTwoPiAtan(y, x):
+def zeroTo360PiAtan(y, x):
 	r = math.atan2(y, x)
 	dr = r if r > 0 else (2*math.pi + r)
-	return dr
+	return dr * (180 / math.pi)
 
 BATCH_FOR_BOOK = 20
-def partitionChunkedPoints(chunkedPoints):
+def partitionChunkedPoints(ox, oy, chunkedPoints):
 	allChunks = []
 	for c in chunkedPoints:
 		allChunks.append(c)
 	print allChunks
-	sortedChunks = sorted(allChunks, key=lambda p: zeroToTwoPiAtan(p[1], p[0]))
+	print map(lambda p: zeroTo360PiAtan(p[1] - oy, p[0] - ox), allChunks)
+	sortedChunks = sorted(allChunks, key=lambda p: zeroTo360PiAtan(p[1] - oy, p[0] - ox))
+	print sortedChunks
+	print map(lambda p: zeroTo360PiAtan(p[1] - oy, p[0] - ox), sortedChunks)
 
 	# [[chunk, chunk], [chunk, chunk], ... ]
 	partitions = [sortedChunks[i:i + BATCH_FOR_BOOK] for i in xrange(0, len(sortedChunks), BATCH_FOR_BOOK)]
@@ -317,11 +320,11 @@ def createBPFromChunk(ck, chunk):
 	bp["blueprint"]["entities"] = entities
 	return bp
 
-def createBlueprintBookFromChunkedPoints(name, chunkedPoints):
+def createBlueprintBookFromChunkedPoints(ox, oy, name, chunkedPoints):
 	s = len(chunkedPoints)
 	i = 0
 	blueprints = []
-	for ck in sorted(chunkedPoints):
+	for ck in sorted(chunkedPoints, key=lambda p: zeroTo360PiAtan(p[1] - oy, p[0] - ox)):
 		cpoints = chunkedPoints[ck]
 		# print ck
 		# print cpoints
@@ -354,7 +357,7 @@ def generateBlueprint(name, semiMajor, eccentricity, inner, outer):
 	cp = getChunkedPoints(sunx, suny, points, directions)
 	t3 = datetime.datetime.now()
 
-	partitions = partitionChunkedPoints(cp)
+	partitions = partitionChunkedPoints(sunx, suny, cp)
 	books = []
 
 	# [ { chunk: [], chunk: [] }, { chunk: [], chunk: [] }, ... ]
@@ -362,7 +365,7 @@ def generateBlueprint(name, semiMajor, eccentricity, inner, outer):
 	for p in partitions:
 		bookname = "{} - {:05d}".format(name, i)
 		i += 1
-		bpbook = createBlueprintBookFromChunkedPoints(bookname, p)
+		bpbook = createBlueprintBookFromChunkedPoints(sunx, suny, bookname, p)
 		bps = jsTobps(jTojs(bpbook))
 		books.append(bps)
 
